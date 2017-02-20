@@ -10,11 +10,13 @@ import lombok.NoArgsConstructor;
 public class MessageDto {
 
 	private long userId;
-	@NotEmpty
+	
+	@NotEmpty(message = "Empty user name")
 	private String userName;
 
 	private long messageId;
-
+	
+	@NotEmpty(message = "Empty message")
 	private String message;
 
 	public MessageDto(String userName, long messageId, String message) {

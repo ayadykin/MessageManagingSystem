@@ -23,7 +23,7 @@ public class MessageServiceImpl implements MessageService {
 
 	private Map<String, User> users = new TreeMap<>();
 	private long messageId;
-	
+
 	@PostConstruct
 	public void init() {
 		User user = new User("And");
@@ -38,42 +38,44 @@ public class MessageServiceImpl implements MessageService {
 		return users;
 	}
 
-	@Override// userId //message
-	public Map<String, User> createMesage(MessageDto messageDto) {
+	@Override
+	public boolean createMesage(MessageDto messageDto) {
 		log.info("createMesage" + messageDto);
 		User user = users.get(messageDto.getUserName());
-		if(Objects.isNull(user)){
+		if (Objects.isNull(user)) {
 			user = new User(messageDto.getUserName());
 			users.put(user.getName(), user);
-		}		
-		user.addMessage(new Message(++messageId, messageDto.getMessage()));
-		
-		return users;
-	}
-
-	@Override// userId //message  //messageId
-	public Map<String, User> updateMesage(MessageDto messageDto) {
-		log.info("updateMesage" + messageDto);
-		User user = users.get(messageDto.getUserName());
-		if(Objects.isNull(user)){
-			throw new RuntimeException();
 		}
-		Message m = new Message(messageDto.getMessageId(), messageDto.getMessage());
-		user.addMessage(m);
-		return users;
+		return user.addMessage(new Message(++messageId, messageDto.getMessage()));
 	}
 
 	@Override
-	public Map<String, User> deleteMesage(MessageDto messageDto) {
-		log.info("deleteMesage" + messageDto);
+	public boolean updateMesage(MessageDto messageDto) {
+		log.info("updateMesage" + messageDto);
 		User user = users.get(messageDto.getUserName());
-		if(Objects.isNull(user)){
+		if (Objects.isNull(user)) {
 			throw new RuntimeException("User not exist");
 		}
-		user.removeMessage(new Message(messageDto.getMessageId(), messageDto.getMessage()));
-
-		return users;
+		Message message = new Message(messageDto.getMessageId(), messageDto.getMessage());
+		if (user.removeMessage(message)) {
+			return user.addMessage(message);
+		} else {
+			throw new RuntimeException("Error update message. Message not exist");
+		}
 	}
-	
-	
+
+	@Override
+	public boolean deleteMesage(MessageDto messageDto) {
+		log.info("deleteMesage" + messageDto);
+		User user = users.get(messageDto.getUserName());
+		if (Objects.isNull(user)) {
+			throw new RuntimeException("User not exist");
+		}
+		if (!user.removeMessage(new Message(messageDto.getMessageId(), messageDto.getMessage()))) {
+			throw new RuntimeException("Error delete message. Message not exist");
+		} else {
+			return true;
+		}
+	}
+
 }

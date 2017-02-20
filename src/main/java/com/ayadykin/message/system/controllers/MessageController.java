@@ -12,6 +12,7 @@ import javax.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +43,7 @@ public class MessageController {
 
 	@GetMapping
 	public String getMessages(@PathParam(value = "impl") String impl, Map<String, Object> model) {
+		log.info("getMessages impl : " + impl);
 		MessageService messageService = getImplementation(impl);
 		model.put(CONTENT, messageService.getMessages());
 		model.put("impl", impl);
@@ -50,37 +52,54 @@ public class MessageController {
 
 	@GetMapping(CREATE_MESSAGE)
 	public String createView(@PathParam(value = "impl") String impl, Map<String, Object> model) {
+		log.info("createView impl : " + impl);
 		model.put(MESSAGE, new MessageDto());
 		model.put("action", "/message/create?impl=" + impl);
 		return CREATE_EDIT_VIEW;
 	}
 
 	@PostMapping(CREATE_MESSAGE)
-	public String createMessages(@Valid @ModelAttribute MessageDto message, @PathParam(value = "impl") String impl,
-			Map<String, Object> model) {
+	public String createMessages(@Valid @ModelAttribute("message") MessageDto messageDto, BindingResult result,
+			@PathParam(value = "impl") String impl, Map<String, Object> model) {
+		log.info("createMessages impl : " + impl);
+		if (result.hasErrors()) {
+			log.warning("Error validate messageDto : " + messageDto);
+			return CREATE_EDIT_VIEW;
+		}
 		MessageService messageService = getImplementation(impl);
-		messageService.createMesage(message);
+		messageService.createMesage(messageDto);
 		return "redirect:/" + MESSAGE_VIEW + "?impl=" + impl;
 	}
 
 	@GetMapping(UPDATE_MESSAGE)
-	public String updateView(@Valid @ModelAttribute MessageDto message, Map<String, Object> model, @PathParam(value = "impl") String impl) {
-		model.put(MESSAGE, message);
+	public String updateView(@Valid @ModelAttribute MessageDto messageDto, Map<String, Object> model,
+			@PathParam(value = "impl") String impl) {
+		log.info("updateView impl : " + impl);
+		model.put(MESSAGE, messageDto);
 		model.put("action", "/message/update?impl=" + impl);
 		return CREATE_EDIT_VIEW;
 	}
 
 	@PostMapping(UPDATE_MESSAGE)
-	public String updeteMessages(@Valid @ModelAttribute MessageDto message, Map<String, Object> model, @PathParam(value = "impl") String impl) {
+	public String updeteMessages(@Valid @ModelAttribute("message") MessageDto messageDto, BindingResult result, Map<String, Object> model,
+			@PathParam(value = "impl") String impl) {
+		log.info("updeteMessages impl : " + impl);
+		if (result.hasErrors()) {
+			log.warning("Error validate messageDto : " + messageDto);
+			model.put(MESSAGE, new MessageDto());
+			return CREATE_EDIT_VIEW;
+		}
 		MessageService messageService = getImplementation(impl);
-		messageService.updateMesage(message);
-		return "redirect:/" + MESSAGE_VIEW  + "?impl=" + impl;
+		messageService.updateMesage(messageDto);
+		return "redirect:/" + MESSAGE_VIEW + "?impl=" + impl;
 	}
 
 	@GetMapping(DELETE_MESSAGE)
-	public String deleteMessages(@Valid @ModelAttribute MessageDto message, Map<String, Object> model, @PathParam(value = "impl") String impl) {
+	public String deleteMessages(@Valid @ModelAttribute MessageDto messageDto, Map<String, Object> model,
+			@PathParam(value = "impl") String impl) {
+		log.info("deleteMessages impl : " + impl);
 		MessageService messageService = getImplementation(impl);
-		messageService.deleteMesage(message);
+		messageService.deleteMesage(messageDto);
 		return "redirect:/" + MESSAGE_VIEW + "?impl=" + impl;
 	}
 

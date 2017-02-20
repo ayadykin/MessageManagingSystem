@@ -5,17 +5,18 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="<c:url value='/static/css/bootstrap.css' />" rel="stylesheet"></link>
+<link href="<c:url value='/static/css/main.css' />" rel="stylesheet"></link>
 <title>Main View</title>
 </head>
 <body>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-1"></div>
-			<div class="col-md-10">
+			<div class="col-md-10 border">
 				<div class="panel-heading text-center">
-					<h2 class="text-center">Main View</h2>
+					<h2>Main View</h2>
 				</div>
-				<table class="table table-bordered table-hover table-striped">
+				<table class="table table-hover table-striped table-border">
 					<thead class="thead-inverse">
 						<tr>
 							<th>Message id</th>
@@ -31,18 +32,17 @@
 									<td><c:out value="${messages.id}" /></td>
 									<td><c:out value="${messages.message}" /></td>
 									<td><c:out value="${user.value.name}" /></td>
-									<td class="text-center"><a class="btn btn-secondary"
+									<td class="text-center"><a class="btn btn-secondary black-border"
 										href="<c:url value="/message/update?userName=${user.value.name}&messageId=${messages.id}&message=${messages.message}&impl=${impl}"/>">Edit</a>
-										<a class="btn btn-secondary"
-										href="<c:url value="/message/delete?userName=${user.value.name}&messageId=${messages.id}&impl=${impl}"/>">Delete</a>
+										<a class="btn btn-secondary black-border"
+										href="<c:url value="/message/delete?userName=${user.value.name}&messageId=${messages.id}&message=${messages.message}&impl=${impl}"/>">Delete</a>
 								</tr>
 							</c:forEach>
 						</c:forEach>
 					</tbody>
 				</table>
 				<div>
-					<a href="<c:url value="/message?impl=DB"/>">DB implementation</a><br>
-					 <a href="<c:url value="/message?impl=Coll"/>">Collection
+					<a href="<c:url value="/message?impl=DB"/>">DB implementation</a><br> <a href="<c:url value="/message?impl=Coll"/>">Collection
 						implementation (default)</a>
 				</div>
 				<div class="well text-center">

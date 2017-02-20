@@ -9,9 +9,9 @@ public interface MessageService {
 
 	public Map<String, User> getMessages();
 
-	public Map<String, User> createMesage(MessageDto message);
+	public boolean createMesage(MessageDto message);
 
-	public Map<String, User> updateMesage(MessageDto message);
+	public boolean updateMesage(MessageDto message);
 
-	public Map<String, User> deleteMesage(MessageDto message);
+	public boolean deleteMesage(MessageDto message);
 }

@@ -1,0 +1,25 @@
+.border{
+	border-style: solid;
+	padding:30px;
+}
+
+.table-border th, .table-border td{
+	border: 3px solid #000;
+}
+.no-padding{
+	padding:0;
+}
+
+.black-border{
+	border-width: 3px;
+	border-style: solid;
+	border-color: #000;
+}
+
+#userNameLabel{
+	justify-content:left;
+}
+
+#userName{
+	width:100%;
+}
